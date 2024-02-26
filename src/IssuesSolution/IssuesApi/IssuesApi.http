@@ -1,0 +1,6 @@
+@IssuesApi_HostAddress = http://localhost:1337
+
+GET {{IssuesApi_HostAddress}}/demo
+Accept: application/json
+
+###
