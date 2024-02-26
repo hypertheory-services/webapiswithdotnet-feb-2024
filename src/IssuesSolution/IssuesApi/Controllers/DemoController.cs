@@ -11,8 +11,10 @@ public class DemoController : ControllerBase
         return Ok(response);
     }
 
+
+    // OData
     [HttpGet("/employees")]
-    public ActionResult GetEmployees([FromQuery] string department = "All")
+    public ActionResult GetEmployees([FromQuery] string department = "All", [FromQuery] decimal minimalSalary = 0)
     {
         var employees = new List<EmployeeResponse>
         {

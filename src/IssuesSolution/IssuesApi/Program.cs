@@ -1,5 +1,8 @@
 // public static void Main(string[] args)
 
+using IssuesApi.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. "Container is an Inversion of Control (IOC) Container"
@@ -9,6 +12,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Use reflection at runtime to document your API with an openapi3.0 spec.
 
+var connectionString = builder.Configuration.GetConnectionString("issues") ?? throw new Exception("Need a connnection string");
+
+builder.Services.AddDbContext<IssuesDataContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
 // Above this line is "setup" configuration. 
 var app = builder.Build();
 // Everything after this line is actually mapping requests coming in to code.
