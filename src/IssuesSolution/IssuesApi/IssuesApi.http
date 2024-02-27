@@ -44,3 +44,14 @@ Content-Type: application/json
 
 GET {{IssuesApi_HostAddress}}/software
 Accept: application/json
+
+
+### 
+
+POST {{IssuesApi_HostAddress}}/software
+Content-Type: application/json
+
+{
+  "title": "Destiny",
+  "version": "2"
+}

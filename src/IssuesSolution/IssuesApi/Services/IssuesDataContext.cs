@@ -8,9 +8,9 @@ public class IssuesDataContext(DbContextOptions<IssuesDataContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<SoftwareItem>().HasData([
-        //    new SoftwareItem { Id = Guid.NewGuid(), Title="Microsoft Word", Version = "97", DateAdded =DateTimeOffset.Now}
-        //    ]);
+        modelBuilder.Entity<SoftwareItem>().HasData([
+            new SoftwareItem { Id = Guid.NewGuid(), Title="Microsoft Word", Version = "97", DateAdded =DateTimeOffset.Now}
+            ]);
         base.OnModelCreating(modelBuilder);
     }
 }

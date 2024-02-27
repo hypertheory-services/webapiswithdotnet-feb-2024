@@ -1,7 +1,9 @@
 // public static void Main(string[] args)
 
+using AutoMapper;
 using IssuesApi;
 using IssuesApi.Features.Catalog;
+using IssuesApi.MapperProfiles;
 using IssuesApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,12 @@ builder.Services.AddDbContext<IssuesDataContext>(options =>
 
 builder.Services.AddCatalogFeature();
 
+var mapperConfiguration = new MapperConfiguration(opts => opts.AddProfile<Software>()); // tiny bit slow.
+
+var mapper = mapperConfiguration.CreateMapper(); //1...2....3
+
+builder.Services.AddSingleton<IMapper>(mapper);
+builder.Services.AddSingleton<MapperConfiguration>(mapperConfiguration);
 
 // Above this line is "setup" configuration. 
 var app = builder.Build();
