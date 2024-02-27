@@ -4,47 +4,42 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IssuesApi.Features.Catalog;
 
-public class BackgroundSoftwareMonitor(ILogger<BackgroundSoftwareMonitor> logger, IServiceProvider sp) : IHostedService, IDisposable
+public class BackgroundSoftwareMonitor(ILogger<BackgroundSoftwareMonitor> logger, IServiceProvider sp) : BackgroundService
 {
-    private bool running = false;
-    public void Dispose()
-    {
-        running = false;
-        // nothing 
-    }
+    private PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        running = true;
-        while (running)
+        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync())
         {
-            await Task.Delay(5000);
-            using (var scope = sp.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<IssuesDataContext>();
-
-                var retired = await context.SoftwareCatalog
-                    .Where(c => c.DateRetired != null && c.RetirementNotificationsSent == false)
-                    .ToListAsync();
-                foreach (var r in retired)
-                {
-                    using (logger.BeginScope("Retired Software"))
-                    {
-                        // remove it from the database, send an email, do whatever.
-                        logger.LogInformation("Item {id} is Retired", r.Id);
-                        // Do all that other work, notifying the user their issue has been cancelled, etc.
-                        r.RetirementNotificationsSent = true;
-
-                    }
-                }
-                await context.SaveChangesAsync(); // Pull the trigger. 
-            }
+            await DoWork();
         }
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    private async Task DoWork()
     {
-        running = false;
-        return Task.CompletedTask;
+        using (var scope = sp.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<IssuesDataContext>();
+
+            var retired = await context.SoftwareCatalog
+                .Where(c => c.DateRetired != null && c.RetirementNotificationsSent == false)
+                .ToListAsync();
+
+            foreach (var r in retired)
+            {
+                using (logger.BeginScope("Retired Software"))
+                {
+                    // remove it from the database, send an email, do whatever.
+                    logger.LogInformation("Item {id} is Retired", r.Id);
+                    // Do all that other work, notifying the user their issue has been cancelled, etc.
+                    r.RetirementNotificationsSent = true;
+                }
+            }
+            await context.SaveChangesAsync();
+
+        }
     }
 }
+
+
