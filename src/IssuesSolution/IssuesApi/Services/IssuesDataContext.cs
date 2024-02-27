@@ -13,6 +13,11 @@ public class IssuesDataContext(DbContextOptions<IssuesDataContext> options) : Db
             ]);
         base.OnModelCreating(modelBuilder);
     }
+
+    public IQueryable<SoftwareItem> ActiveSoftwareItems()
+    {
+        return SoftwareCatalog.Where(i => i.DateRetired == null);
+    }
 }
 
 // "Entity" 
@@ -26,4 +31,7 @@ public class SoftwareItem
     public DateTimeOffset? DateRetired { get; set; } = null;
 
     public bool RetirementNotificationsSent { get; set; } = false;
+
+
+
 }

@@ -37,6 +37,7 @@ var mapper = mapperConfiguration.CreateMapper(); //1...2....3
 builder.Services.AddSingleton<IMapper>(mapper);
 builder.Services.AddSingleton<MapperConfiguration>(mapperConfiguration);
 
+//builder.Services.AddAutoMapper(typeof(Software));
 // Above this line is "setup" configuration. 
 var app = builder.Build();
 // Everything after this line is actually mapping requests coming in to code.

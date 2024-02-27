@@ -32,11 +32,21 @@ public class SoftwareCatalogManager(IssuesDataContext context, IMapper mapper, M
     public async Task<SoftwareCatalogSummaryResponseItem?> GetItemByIdAsync(Guid id, CancellationToken token)
     {
         var response = await context
-            .SoftwareCatalog
-            .Where(item => item.Id == id && item.DateRetired == null)
+            .ActiveSoftwareItems()
+            .Where(item => item.Id == id)
             .ProjectTo<SoftwareCatalogSummaryResponseItem>(mapperConfig)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(token);
 
         return response;
+    }
+
+    public async Task RetireSoftwareItemAsync(Guid id, CancellationToken token)
+    {
+        var savedItem = await context.ActiveSoftwareItems().SingleOrDefaultAsync(item => item.Id == id, token);
+        if (savedItem is not null)
+        {
+            savedItem.DateRetired = DateTimeOffset.UtcNow;
+            await context.SaveChangesAsync();
+        }
     }
 }
