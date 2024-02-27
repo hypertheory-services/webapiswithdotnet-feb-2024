@@ -1,5 +1,6 @@
 // public static void Main(string[] args)
 
+using IssuesApi;
 using IssuesApi.Features.Catalog;
 using IssuesApi.Services;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,29 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-
+if (app.Environment.IsDevelopment())
+{
+    await SeedIssuesAsync();
+}
 
 app.Run(); // Blocking Call. This is the webserver (kestrel) running and listing as long as the application runs..
 
+async Task SeedIssuesAsync()
+{
+    // You need to create a scope to get a scoped service, if you are doing this outside of an
+    // an "injection context" - like not having it on the constructor a runtime thing like
+    // a controller or a service.
+    using (var scope = app.Services.CreateScope())
+    {
+        try
+        {
+            var scopedContext = scope.ServiceProvider.GetRequiredService<IssuesDataContext>();
+            await DevelopmentSeedData.InitializeSoftwareCatalogAsync(scopedContext);
+        }
+        catch
+        {
+
+            throw;
+        }
+    }// The scope is "Disposed"
+}
