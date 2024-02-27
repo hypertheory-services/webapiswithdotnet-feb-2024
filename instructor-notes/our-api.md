@@ -67,3 +67,33 @@ Content-Type: application/json
 }
 
 ```
+
+
+Http Methods:
+
+Method  Cacheable   Safe    Idempotent
+GET     Yes         Yes     Yes
+POST    No*         No      No
+PUT     No          No      Yes
+DELETE  No          No      Yes
+
+
+DELETE from Customers where CustomerId = 'Bob-Smith'
+
+Cacheable - clients can hold on to the representations according to the cache-control header.
+Safe - No "Side effects" - Stuff the "business" cares about.
+        - for example, NEVER EVER EVER do something like make it so a user of your API can delete a policy by doing a GET request.
+
+Idempotent - doing it multiple times is "Safe" - it has the same response.
+
+GET /fireemployees?id=39893893
+
+
+GET /checkout
+
+Item    Description Price   Action
+1       Eggs        3.99     [Remove] <a href="checkout?remove-item=1">Remove</a>
+13      Beer        14.99    [Remove] <a href="checkout?remove-item=1">Remove</a>
+
+
+[Buy Now]
