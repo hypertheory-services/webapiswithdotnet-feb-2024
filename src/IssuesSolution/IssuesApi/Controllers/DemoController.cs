@@ -1,12 +1,17 @@
 ﻿
 namespace IssuesApi.Controllers;
 
-public class DemoController : ControllerBase
+public class DemoController(ILogger<DemoController> logger) : ControllerBase
 {
     // GET /demo
     [HttpGet("/demo")] // hey, if I get an GET request to /Demo, run this.
-    public ActionResult<DemoResponse> GetTheDemo()
+    public async Task<ActionResult<DemoResponse>> GetTheDemo(CancellationToken token)
     {
+        // Some Long Running Operation like a database call.
+        logger.LogInformation("Starting the database call");
+        await Task.Delay(3000, token); // Classroom crap! Don't do this.
+        logger.LogInformation("Done with the database call");
+
         var response = new DemoResponse("Looks Good!", DateTimeOffset.Now);
         return Ok(response);
     }

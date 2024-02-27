@@ -4,9 +4,9 @@ public class SoftwareCatalogController(SoftwareCatalogManager catalog) : Control
 {
 
     [HttpGet("/software")]
-    public async Task<ActionResult> GetAllSoftwareAsync()
+    public async Task<ActionResult> GetAllSoftwareAsync(CancellationToken token)
     {
-        var data = await catalog.GetAllCurrentSoftwareAsync();
+        var data = await catalog.GetAllCurrentSoftwareAsync(token);
         return Ok(data);
     }
 }
