@@ -1,7 +1,7 @@
 ﻿namespace IssuesApi.Features.Catalog;
 
 // Before we got here, ASP.NET CORE create a scope, created our controller with it, and the softwarecatalog manager, and the datacontext
-public class SoftwareCatalogController(SoftwareCatalogManager catalog) : ControllerBase
+public class SoftwareCatalogController(SoftwareCatalogManager catalog, ILogger<SoftwareCatalogController> logger) : ControllerBase
 {
 
     [HttpGet("/software")]
@@ -20,9 +20,10 @@ public class SoftwareCatalogController(SoftwareCatalogManager catalog) : Control
         return Ok(response);
     }
 
-    [HttpGet("/software/{id}")]
+    [HttpGet("/software/{id:guid}")]
     public async Task<ActionResult> GetSoftwareItemByIdAsync(Guid id, CancellationToken token)
     {
+        logger.LogInformation("Looking up software item {id}", id);
         SoftwareCatalogSummaryResponseItem? item = await catalog.GetItemByIdAsync(id, token);
 
         if (item is not null)
