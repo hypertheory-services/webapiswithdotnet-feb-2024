@@ -19,7 +19,8 @@ namespace IssuesApi.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Version = table.Column<string>(type: "text", nullable: false),
                     DateAdded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    DateRetired = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                    DateRetired = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    RetirementNotificationsSent = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

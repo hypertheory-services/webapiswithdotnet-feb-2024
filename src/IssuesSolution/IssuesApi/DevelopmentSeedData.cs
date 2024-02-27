@@ -42,8 +42,8 @@ public static class DevelopmentSeedData
             {
                 context.SoftwareCatalog.Add(item);
             }
+            await context.SaveChangesAsync();
         }
 
-        await context.SaveChangesAsync();
     }
 }

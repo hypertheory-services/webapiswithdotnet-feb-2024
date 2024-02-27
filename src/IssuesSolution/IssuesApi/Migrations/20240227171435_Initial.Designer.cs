@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IssuesApi.Migrations
 {
     [DbContext(typeof(IssuesDataContext))]
-    [Migration("20240226213712_Initial")]
+    [Migration("20240227171435_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -36,6 +36,9 @@ namespace IssuesApi.Migrations
 
                     b.Property<DateTimeOffset?>("DateRetired")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RetirementNotificationsSent")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Title")
                         .IsRequired()

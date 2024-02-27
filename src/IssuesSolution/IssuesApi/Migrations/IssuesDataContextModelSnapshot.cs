@@ -34,6 +34,9 @@ namespace IssuesApi.Migrations
                     b.Property<DateTimeOffset?>("DateRetired")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("RetirementNotificationsSent")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");

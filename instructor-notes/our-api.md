@@ -31,18 +31,28 @@ What they need:
 - The Representation
 
 ```http
-POST /issues
+POST /software/{id}/issues
 Content-Type: application/json
 Authorization: "something here that identified the user"
 
 {
 
-    "description": "Done broke",
-    "software": "Excel",
-    "softwareversion": "95",
+    "description": "Done broke"
    
 }
 ```
+
+POST /software/e42171ef-6faa-4071-9dd8-85370e8e20ed/issues
+
+{
+    "description": "Bad Stuff"
+}
+
+GET /software/e42171ef-6faa-4071-9dd8-85370e8e20ed/issues
+
+GET /software/issues
+GET /software-issues
+
 
 
 ```http

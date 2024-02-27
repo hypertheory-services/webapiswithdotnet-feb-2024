@@ -24,4 +24,6 @@ public class SoftwareItem
 
     public DateTimeOffset DateAdded { get; set; }
     public DateTimeOffset? DateRetired { get; set; } = null;
+
+    public bool RetirementNotificationsSent { get; set; } = false;
 }
