@@ -38,3 +38,9 @@ Content-Type: application/json
   "name": "Jake Jones",
   "department": "DEV"
 }
+
+
+###
+
+GET {{IssuesApi_HostAddress}}/software
+Accept: application/json

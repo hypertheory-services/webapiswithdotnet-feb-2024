@@ -5,6 +5,14 @@ namespace IssuesApi.Services;
 public class IssuesDataContext(DbContextOptions<IssuesDataContext> options) : DbContext(options)
 {
     public DbSet<SoftwareItem> SoftwareCatalog { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //modelBuilder.Entity<SoftwareItem>().HasData([
+        //    new SoftwareItem { Id = Guid.NewGuid(), Title="Microsoft Word", Version = "97", DateAdded =DateTimeOffset.Now}
+        //    ]);
+        base.OnModelCreating(modelBuilder);
+    }
 }
 
 // "Entity" 

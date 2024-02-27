@@ -1,5 +1,6 @@
 // public static void Main(string[] args)
 
+using IssuesApi.Features.Catalog;
 using IssuesApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,15 @@ builder.Services.AddDbContext<IssuesDataContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
+
+// Don't inject anything into a Singleton service other than Singleton services
+// This would inject Scoped service into a Singleton, which would be bad.
+//builder.Services.AddSingleton<SoftwareCatalogManager>(); // BAD.
+
+
+builder.Services.AddCatalogFeature();
+
+
 // Above this line is "setup" configuration. 
 var app = builder.Build();
 // Everything after this line is actually mapping requests coming in to code.
