@@ -1,6 +1,10 @@
 ﻿
+using FluentValidation;
+using System.ComponentModel.DataAnnotations;
+
 namespace IssuesApi.Controllers;
 
+//[ApiController]
 public class DemoController(ILogger<DemoController> logger) : ControllerBase
 {
     // GET /demo
@@ -44,7 +48,7 @@ public class DemoController(ILogger<DemoController> logger) : ControllerBase
     {
         if (employeeId % 2 == 0)
         {
-            return Ok(new EmployeeResponse(Guid.NewGuid(), "Bob Smith", "DEV"));
+            return Ok(new EmployeeResponse(Guid.NewGuid(), null, "DEV"));
         }
         else
         {
@@ -53,22 +57,89 @@ public class DemoController(ILogger<DemoController> logger) : ControllerBase
     }
 
     [HttpPost("/employees")]
-    public ActionResult HireAnEmployee([FromBody] EmployeeHireRequest request)
+    public async Task<ActionResult> HireAnEmployee([FromBody] EmployeeHiringRequest2 request)
     {
-        // validate the thing...
-        // save it to the database..
 
-        var response = new EmployeeResponse(Guid.NewGuid(), request.Name, request.Department);
-        return Ok(response);
+        var validator = new EmployeeHiringValidator();
+
+        var results = await validator.ValidateAsync(request);
+
+        if (!results.IsValid)
+        {
+            return BadRequest(results);
+        }
+
+        if (request.StartingSalary.HasValue)
+        {
+            var requestedSalary = request.StartingSalary.Value;
+        }
+
+        return Ok(request);
     }
 
 }
 
-public record EmployeeHireRequest(string Name, string Department);
+public record EmployeeHireRequest : IValidatableObject
+{
+    [Required, MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
+    [Required, EmailAddress]
+    public string EmailAddress { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "We need a pay!")]
+    public decimal? StartingSalary { get; set; }
+    [Required]
+    public EmployeeType? EmployeeType { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (EmployeeType == Controllers.EmployeeType.FullTime && StartingSalary < 80000)
+        {
+            yield return new ValidationResult("You have to pay full time people more", [nameof(StartingSalary), nameof(EmployeeType)]);
+
+        }
+    }
+}
+
+public record EmployeeHiringRequest2
+{
+
+    public string? Name { get; set; }
+
+    public string? EmailAddress { get; set; }
+
+
+    public decimal? StartingSalary { get; set; }
+
+    public EmployeeType? EmployeeType { get; set; }
+}
+
+public class EmployeeHiringValidator : AbstractValidator<EmployeeHiringRequest2>
+{
+    public EmployeeHiringValidator()
+    {
+        RuleFor(e => e.Name).NotNull().MaximumLength(100);
+        RuleFor(e => e.EmailAddress).NotNull().EmailAddress();
+        RuleFor(e => e.StartingSalary).NotNull().GreaterThan(100000).When(e => e.EmployeeType == EmployeeType.FullTime);
+        RuleFor(e => e.EmailAddress).NotNull();
+        RuleFor(e => e.EmailAddress).MustAsync(async (email, cancellationToken) =>
+        {
+            await Task.Delay(200);
+            if (email == "jeff@hypertheory.com") { return false; }
+            return true;
+        }).WithMessage("We aren't going to hire THAT joker!");
+
+    }
+
+}
+
+
+public enum EmployeeType { Intern, PartTime, FullTime }
+
 
 public record DemoResponse(string Message, DateTimeOffset CreatedAt);
 
-public record EmployeeResponse(Guid Id, string Name, string Department);
+public record EmployeeResponse(Guid Id, string? Name, string Department);
 
 
 public record CollectionResponse<T>(List<T> Data);

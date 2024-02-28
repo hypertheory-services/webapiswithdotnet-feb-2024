@@ -1,18 +1,28 @@
 // public static void Main(string[] args)
 
 using AutoMapper;
+using FluentValidation;
 using IssuesApi;
+using IssuesApi.Controllers;
 using IssuesApi.Features.Catalog;
 using IssuesApi.MapperProfiles;
 using IssuesApi.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. "Container is an Inversion of Control (IOC) Container"
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // No excuse (unless for compatibility).
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeHiringValidator>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Use reflection at runtime to document your API with an openapi3.0 spec.
