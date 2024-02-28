@@ -5,7 +5,7 @@ public class SoftwareCatalogController(SoftwareCatalogManager catalog, ILogger<S
 {
 
     [HttpGet("/software")]
-    public async Task<ActionResult> GetAllSoftwareAsync(CancellationToken token)
+    public async Task<ActionResult<CollectionResponse<SoftwareCatalogSummaryResponseItem>>> GetAllSoftwareAsync(CancellationToken token)
     {
         var data = await catalog.GetAllCurrentSoftwareAsync(token);
         return Ok(data);

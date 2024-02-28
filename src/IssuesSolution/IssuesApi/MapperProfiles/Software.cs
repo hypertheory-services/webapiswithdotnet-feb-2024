@@ -8,7 +8,7 @@ public class Software : Profile
 {
     public Software()
     {
-        // From SoftwareItem -> SoftwareCatalogSummaryResponseItem
+        // CreateMap<Source,Destination>
         CreateMap<SoftwareItem, SoftwareCatalogSummaryResponseItem>()
            .ForMember(dest => dest.Title, config => config.MapFrom(src => src.Title + " " + src.Version));
 
