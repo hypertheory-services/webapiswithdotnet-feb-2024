@@ -6,7 +6,7 @@ namespace IssuesApi.Features.Catalog;
 
 public class BackgroundSoftwareMonitor(ILogger<BackgroundSoftwareMonitor> logger, IServiceProvider sp) : BackgroundService
 {
-    private PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromSeconds(10)); // .NET 6
+    private PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromHours(1)); // .NET 6
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

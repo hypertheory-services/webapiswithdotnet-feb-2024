@@ -6,6 +6,7 @@ using IssuesApi.Features.Catalog;
 using IssuesApi.MapperProfiles;
 using IssuesApi.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,8 @@ builder.Services.AddDbContext<IssuesDataContext>(options =>
 
 builder.Services.AddScoped<IManageTheSoftwareCatalog>(sp =>
 {
-    return new DapperSoftwareCatalogManager(connectionString);
+    var channel = sp.GetRequiredService<Channel<Guid>>();
+    return new DapperSoftwareCatalogManager(connectionString, channel);
 });
 
 // Don't inject anything into a Singleton service other than Singleton services

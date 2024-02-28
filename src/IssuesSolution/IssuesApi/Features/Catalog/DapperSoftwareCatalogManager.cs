@@ -2,15 +2,18 @@
 using Dapper;
 using Npgsql;
 using System.Data;
+using System.Threading.Channels;
 
 namespace IssuesApi.Features.Catalog;
 
 public class DapperSoftwareCatalogManager : IManageTheSoftwareCatalog
 {
     private readonly IDbConnection _connection;
-    public DapperSoftwareCatalogManager(string connectionString)
+    private readonly Channel<Guid> _channel;
+    public DapperSoftwareCatalogManager(string connectionString, Channel<Guid> channel)
     {
         _connection = new NpgsqlConnection(connectionString);
+        _channel = channel;
     }
     public async Task<SoftwareCatalogSummaryResponseItem> AddSoftwareItemAsync(SoftwareItemRequestModel request, CancellationToken token)
     {
@@ -75,7 +78,13 @@ public class DapperSoftwareCatalogManager : IManageTheSoftwareCatalog
             UPDATE "SoftwareCatalog" SET "DateRetired" = @now
             WHERE "Id" = @id AND "DateRetired" IS NULL
             """;
-
+        while (await _channel.Writer.WaitToWriteAsync(token))
+        {
+            if (_channel.Writer.TryWrite(id))
+            {
+                break;
+            }
+        }
         await _connection.ExecuteAsync(sql, new { id = id, now = DateTimeOffset.UtcNow });
     }
 }
