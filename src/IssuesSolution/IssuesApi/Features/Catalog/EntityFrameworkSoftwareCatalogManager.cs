@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IssuesApi.Features.Catalog;
 
-public class SoftwareCatalogManager(IssuesDataContext context, IMapper mapper, MapperConfiguration mapperConfig)
+public class EntityFrameworkSoftwareCatalogManager(IssuesDataContext context, IMapper mapper, MapperConfiguration mapperConfig) : IManageTheSoftwareCatalog
 {
 
     public async Task<CollectionResponse<SoftwareCatalogSummaryResponseItem>> GetAllCurrentSoftwareAsync(CancellationToken token)

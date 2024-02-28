@@ -1,7 +1,7 @@
 ﻿namespace IssuesApi.Features.Catalog;
 
 // Before we got here, ASP.NET CORE create a scope, created our controller with it, and the softwarecatalog manager, and the datacontext
-public class SoftwareCatalogController(SoftwareCatalogManager catalog, ILogger<SoftwareCatalogController> logger) : ControllerBase
+public class SoftwareCatalogController(IManageTheSoftwareCatalog catalog, ILogger<SoftwareCatalogController> logger) : ControllerBase
 {
 
     [HttpGet("/software")]
