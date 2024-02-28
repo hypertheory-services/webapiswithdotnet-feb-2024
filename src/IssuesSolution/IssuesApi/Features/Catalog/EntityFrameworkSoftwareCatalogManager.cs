@@ -35,7 +35,7 @@ public class EntityFrameworkSoftwareCatalogManager(IssuesDataContext context, IM
             .ActiveSoftwareItems()
             .Where(item => item.Id == id)
             .ProjectTo<SoftwareCatalogSummaryResponseItem>(mapperConfig)
-            .SingleOrDefaultAsync(token);
+            .SingleOrDefaultAsync(token); // if this return 0, make response null, if it returns 1 make that the response, if it returns MORE than one item, throw an exception.
 
         return response;
     }

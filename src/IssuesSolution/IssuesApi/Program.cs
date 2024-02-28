@@ -23,6 +23,11 @@ builder.Services.AddDbContext<IssuesDataContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+builder.Services.AddScoped<IManageTheSoftwareCatalog>(sp =>
+{
+    return new DapperSoftwareCatalogManager(connectionString);
+});
+
 // Don't inject anything into a Singleton service other than Singleton services
 // This would inject Scoped service into a Singleton, which would be bad.
 //builder.Services.AddSingleton<SoftwareCatalogManager>(); // BAD.
